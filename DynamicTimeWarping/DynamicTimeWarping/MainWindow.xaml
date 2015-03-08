@@ -1,8 +1,25 @@
-﻿<Window x:Class="DynamicTimeWarping.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="DynamicTimeWarping.MainWindow"
+        Title="MainWindow" Height="650" Width="650">
+  <Grid>
+
+    <chartingToolkit:Chart x:Name="dynamicSeries" HorizontalAlignment="Left" Margin="182,434,0,0" Title="Dynamic Signal" VerticalAlignment="Top" Width="450" FontSize="8" Height="175">
+      <chartingToolkit:Chart.LegendStyle>
+        <Style TargetType="{x:Type Control}">
+          <Setter Property="Width" Value="0"/>
+          <Setter Property="Height" Value="0"/>
+        </Style>
+      </chartingToolkit:Chart.LegendStyle>
+
+      <chartingToolkit:LineSeries HorizontalAlignment="Left" Width="427" DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" IsSelectionEnabled="True" Foreground="#FFF90000">
+      </chartingToolkit:LineSeries>
+    </chartingToolkit:Chart>
+    
+    <Button Name="DTWBtn" Content="DTW" HorizontalAlignment="Left" Margin="56,466,0,0" VerticalAlignment="Top" Width="75" Click="DTWBtn_Click"/>
+    <Button Name="showPathBtn" Content="Show Path" HorizontalAlignment="Left" Margin="56,503,0,0" VerticalAlignment="Top" Width="75" Click="showPathBtn_Click"/>
+    <Button Name="insertSampleBtn" Content="Insert Sample" HorizontalAlignment="Left" Margin="56,540,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.52,0.15" Click="insertSampleBtn_Click"/>
+
+  </Grid>
 </Window>
