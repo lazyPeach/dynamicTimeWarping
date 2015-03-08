@@ -30,10 +30,10 @@ namespace DynamicTimeWarping
 
     private void InitBoard()
     {
-      SolidColorBrush redBrush = new SolidColorBrush();
-      redBrush.Color = (Color)ColorConverter.ConvertFromString("#007700");
-      SolidColorBrush blackBrush = new SolidColorBrush();
-      blackBrush.Color = (Color)ColorConverter.ConvertFromString("#cccccc");
+      SolidColorBrush fillBrush = new SolidColorBrush();
+      fillBrush.Color = (Color)ColorConverter.ConvertFromString("#007700");
+      SolidColorBrush strokeBrush = new SolidColorBrush();
+      strokeBrush.Color = (Color)ColorConverter.ConvertFromString("#cccccc");
 
       for (int i = 0; i < rows; i++)
       {
@@ -42,8 +42,8 @@ namespace DynamicTimeWarping
           cells[i, j] = new Rectangle();
           cells[i, j].Height = 15;
           cells[i, j].Width = 15;
-          cells[i, j].Fill = redBrush;
-          cells[i, j].Stroke = blackBrush;
+          cells[i, j].Fill = fillBrush;
+          cells[i, j].Stroke = strokeBrush;
 
           board.Children.Add(cells[i, j]);
           Grid.SetColumn(cells[i, j], j);
