@@ -16,7 +16,7 @@ namespace DynamicTimeWarping {
       this.signalLength = signalLength;
       rows = signalLength;
       cols = signalLength;
-      DTWMatrix = new double[signalLength + 1, signalLength + 1]; // row 0 and col 0 elems are initialized with infinity 
+      DTWMatrix = new double[signalLength, signalLength]; 
       InitSignals();
     }
 
@@ -32,6 +32,10 @@ namespace DynamicTimeWarping {
       return DTWCost;
     }
 
+    public double[,] GetDTWMatrix() {
+      return DTWMatrix;
+    }
+
     public void InsertSample() {
       dynamicSignal.RemoveLast();
       Random rnd = new Random();
@@ -39,48 +43,52 @@ namespace DynamicTimeWarping {
     }
 
     public void ComputeDTWMatrix() {
-      double[,] differenceMatrix = new double[signalLength, signalLength];
+      //double[,] differenceMatrix = new double[signalLength, signalLength];
       double max = 0;
 
       // compute the signal difference matrix and get the maximum value of it
       for (int i = 0; i < signalLength; i++) {
         for (int j = 0; j < signalLength; j++) {
-          differenceMatrix[i, j] = Math.Abs(staticSignal.ElementAt(i) - dynamicSignal.ElementAt(j));
+          DTWMatrix[i, j] = Math.Abs(staticSignal.ElementAt(i) - dynamicSignal.ElementAt(j));
 
-          if (differenceMatrix[i, j] > max) max = differenceMatrix[i, j];
+          if (DTWMatrix[i, j] > max) max = DTWMatrix[i, j];
         }
       }
 
       // normalize matrix -> make all values between 1 and 0
       for (int i = 0; i < signalLength; i++) {
         for (int j = 0; j < signalLength; j++) {
-          differenceMatrix[i, j] /= max;
+          DTWMatrix[i, j] /= max;
         }
       }
 
       
-      // compute the dtw matrix
-
+      // make a copy matrix with infinity on row 0 and col 0
+      double[,] copyMatrix = new double[signalLength + 1, signalLength + 1];
       // init elements on row 0 and col 0 to 1.1 (a value grater than others in the matrix)
       for (int i = 0; i < signalLength + 1; i++)
-        DTWMatrix[i, 0] = 1.1;
+        copyMatrix[i, 0] = 1.1;
 
       for (int j = 0; j < signalLength + 1; j++)
-        DTWMatrix[0, j] = 1.1;
+        copyMatrix[0, j] = 1.1;
 
       // copy difference matrix into the dtw one
       for (int i = 1; i < signalLength + 1; i++) {
         for (int j = 1; j < signalLength + 1; j++) {
-          DTWMatrix[i, j] = differenceMatrix[i - 1, j - 1];
+          copyMatrix[i, j] = DTWMatrix[i - 1, j - 1];
         }
       }
 
       dtwPath.Clear();
-      DTWCost = GetDTWCost(DTWMatrix, signalLength, signalLength);
+      DTWCost = GetDTWCost(copyMatrix, signalLength, signalLength);
     }
 
     // keep elements that compose the dtw path
     private List<Tuple<int, int>> dtwPath = new List<Tuple<int, int>>();
+
+    public List<Tuple<int, int>> GetDTWPath() {
+      return dtwPath;
+    }
 
     // recursively compute the DTW cost - greedy solution
     private double GetDTWCost(double[,] mat, int i, int j) {

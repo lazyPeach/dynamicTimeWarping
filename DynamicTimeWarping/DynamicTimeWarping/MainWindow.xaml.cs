@@ -17,11 +17,13 @@ namespace DynamicTimeWarping {
 
   public partial class MainWindow : Window {
     private DynamicTimeWarpingComputing dynamicTimeWarping;
+    private int signalLength = 30;
 
     public MainWindow() {
       InitializeComponent();
 
-      dynamicTimeWarping = new DynamicTimeWarpingComputing(30);
+      Board.InitializeBoard(signalLength);
+      dynamicTimeWarping = new DynamicTimeWarpingComputing(signalLength);
 
       PlotDynamicSignal();
       PlotStaticSignal();
@@ -53,11 +55,12 @@ namespace DynamicTimeWarping {
 
     private void DTWBtn_Click(object sender, RoutedEventArgs e) {
       dynamicTimeWarping.ComputeDTWMatrix();
+      Board.UpdateBoard(dynamicTimeWarping.GetDTWMatrix());
       Result.Content = dynamicTimeWarping.GetDTWCost().ToString();
     }
 
     private void showPathBtn_Click(object sender, RoutedEventArgs e) {
-
+      Board.ShowPath(dynamicTimeWarping.GetDTWPath());
     }
 
     private void insertSampleBtn_Click(object sender, RoutedEventArgs e) {
