@@ -27,48 +27,40 @@ namespace DynamicTimeWarping {
       PlotStaticSignal();
     }
 
-
-
-    private void PlotDynamicSignal()
-    {
+    private void PlotDynamicSignal() {
       LinkedList<double> dynamicSignal = dynamicTimeWarping.GetDynamicSignal();
       List<KeyValuePair<int, double>> dynamicValues = new List<KeyValuePair<int, double>>();
       int index = 0;
 
-      foreach (double val in dynamicSignal)
-      {
+      foreach (double val in dynamicSignal) {
         dynamicValues.Add(new KeyValuePair<int, double>(index++, val));
       }
 
       dynamicSeries.DataContext = dynamicValues;
     }
 
-    private void PlotStaticSignal()
-    {
+    private void PlotStaticSignal() {
       LinkedList<double> staticSignal = dynamicTimeWarping.GetStaticSignal();
       List<KeyValuePair<int, double>> staticValues = new List<KeyValuePair<int, double>>();
       int index = 0;
 
-      foreach (double val in staticSignal)
-      {
+      foreach (double val in staticSignal) {
         staticValues.Add(new KeyValuePair<int, double>(index++, val));
       }
 
       staticSeries.DataContext = staticValues;
     }
 
-    private void DTWBtn_Click(object sender, RoutedEventArgs e)
-    {
+    private void DTWBtn_Click(object sender, RoutedEventArgs e) {
+      dynamicTimeWarping.ComputeDTWMatrix();
+      Result.Content = dynamicTimeWarping.GetDTWCost().ToString();
+    }
+
+    private void showPathBtn_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    private void showPathBtn_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void insertSampleBtn_Click(object sender, RoutedEventArgs e)
-    {
+    private void insertSampleBtn_Click(object sender, RoutedEventArgs e) {
       dynamicTimeWarping.InsertSample();
       PlotDynamicSignal();
     }

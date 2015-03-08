@@ -4,123 +4,117 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DynamicTimeWarping
-{
-  class DynamicTimeWarpingComputing
-  {
+namespace DynamicTimeWarping {
+  class DynamicTimeWarpingComputing {
     private int signalLength, rows, cols;
     private LinkedList<double> dynamicSignal = new LinkedList<double>();
     private LinkedList<double> staticSignal = new LinkedList<double>();
+    private double[,] DTWMatrix;
+    private double DTWCost;
 
-    public DynamicTimeWarpingComputing(int signalLength)
-    {
+    public DynamicTimeWarpingComputing(int signalLength) {
       this.signalLength = signalLength;
       rows = signalLength;
       cols = signalLength;
+      DTWMatrix = new double[signalLength + 1, signalLength + 1]; // row 0 and col 0 elems are initialized with infinity 
       InitSignals();
-      //InitDynamicSignal();
-      //InitStaticSignal();
     }
 
-    private void InitSignals()
-    {
-      Random rnd = new Random();
-
-      for (int i = 0; i < signalLength; i++)
-      {
-        double sample = rnd.NextDouble() * 9 + 1; // in order to have a signal between 1 and 10
-        dynamicSignal.AddLast(sample);
-        staticSignal.AddLast(sample);
-      }
-    }
-
-    public LinkedList<double> GetDynamicSignal()
-    {
+    public LinkedList<double> GetDynamicSignal() {
       return dynamicSignal;
     }
 
-    public LinkedList<double> GetStaticSignal()
-    {
+    public LinkedList<double> GetStaticSignal() {
       return staticSignal;
     }
 
-    public void InsertSample()
-    {
+    public double GetDTWCost() {
+      return DTWCost;
+    }
+
+    public void InsertSample() {
       dynamicSignal.RemoveLast();
       Random rnd = new Random();
       dynamicSignal.AddFirst(rnd.NextDouble() * 9 + 1);
     }
 
-    private void InitDynamicSignal()
-    {
-      dynamicSignal.AddLast(1.2);
-      dynamicSignal.AddLast(2.8);
-      dynamicSignal.AddLast(3.1);
-      dynamicSignal.AddLast(3.4);
-      dynamicSignal.AddLast(4.0);
-      dynamicSignal.AddLast(1.9);
-      dynamicSignal.AddLast(5.8);
-      dynamicSignal.AddLast(6.4);
-      dynamicSignal.AddLast(8.9);
-      dynamicSignal.AddLast(9.8);
+    public void ComputeDTWMatrix() {
+      double[,] differenceMatrix = new double[signalLength, signalLength];
+      double max = 0;
 
-      dynamicSignal.AddLast(8.7);
-      dynamicSignal.AddLast(8.2);
-      dynamicSignal.AddLast(6.1);
-      dynamicSignal.AddLast(2.4);
-      dynamicSignal.AddLast(2.6);
-      dynamicSignal.AddLast(2.8);
-      dynamicSignal.AddLast(3.5);
-      dynamicSignal.AddLast(4.1);
-      dynamicSignal.AddLast(1.2);
-      dynamicSignal.AddLast(4.9);
+      // compute the signal difference matrix and get the maximum value of it
+      for (int i = 0; i < signalLength; i++) {
+        for (int j = 0; j < signalLength; j++) {
+          differenceMatrix[i, j] = Math.Abs(staticSignal.ElementAt(i) - dynamicSignal.ElementAt(j));
 
-      dynamicSignal.AddLast(5.3);
-      dynamicSignal.AddLast(5.9);
-      dynamicSignal.AddLast(6.4);
-      dynamicSignal.AddLast(6.9);
-      dynamicSignal.AddLast(7.5);
-      dynamicSignal.AddLast(8.0);
-      dynamicSignal.AddLast(7.8);
-      dynamicSignal.AddLast(6.1);
-      dynamicSignal.AddLast(8.9);
-      dynamicSignal.AddLast(9.7);
+          if (differenceMatrix[i, j] > max) max = differenceMatrix[i, j];
+        }
+      }
+
+      // normalize matrix -> make all values between 1 and 0
+      for (int i = 0; i < signalLength; i++) {
+        for (int j = 0; j < signalLength; j++) {
+          differenceMatrix[i, j] /= max;
+        }
+      }
+
+      
+      // compute the dtw matrix
+
+      // init elements on row 0 and col 0 to 1.1 (a value grater than others in the matrix)
+      for (int i = 0; i < signalLength + 1; i++)
+        DTWMatrix[i, 0] = 1.1;
+
+      for (int j = 0; j < signalLength + 1; j++)
+        DTWMatrix[0, j] = 1.1;
+
+      // copy difference matrix into the dtw one
+      for (int i = 1; i < signalLength + 1; i++) {
+        for (int j = 1; j < signalLength + 1; j++) {
+          DTWMatrix[i, j] = differenceMatrix[i - 1, j - 1];
+        }
+      }
+
+      dtwPath.Clear();
+      DTWCost = GetDTWCost(DTWMatrix, signalLength, signalLength);
     }
 
-    private void InitStaticSignal()
-    {
-      staticSignal.AddLast(1.2);
-      staticSignal.AddLast(2.8);
-      staticSignal.AddLast(3.1);
-      staticSignal.AddLast(3.4);
-      staticSignal.AddLast(4.0);
-      staticSignal.AddLast(1.9);
-      staticSignal.AddLast(5.8);
-      staticSignal.AddLast(6.4);
-      staticSignal.AddLast(8.9);
-      staticSignal.AddLast(9.8);
+    // keep elements that compose the dtw path
+    private List<Tuple<int, int>> dtwPath = new List<Tuple<int, int>>();
 
-      staticSignal.AddLast(8.7);
-      staticSignal.AddLast(8.2);
-      staticSignal.AddLast(6.1);
-      staticSignal.AddLast(2.4);
-      staticSignal.AddLast(2.6);
-      staticSignal.AddLast(2.8);
-      staticSignal.AddLast(3.5);
-      staticSignal.AddLast(4.1);
-      staticSignal.AddLast(1.2);
-      staticSignal.AddLast(4.9);
+    // recursively compute the DTW cost - greedy solution
+    private double GetDTWCost(double[,] mat, int i, int j) {
+      if (i == 0 && j == 0)
+        return 0;
 
-      staticSignal.AddLast(5.3);
-      staticSignal.AddLast(5.9);
-      staticSignal.AddLast(6.4);
-      staticSignal.AddLast(6.9);
-      staticSignal.AddLast(7.5);
-      staticSignal.AddLast(8.0);
-      staticSignal.AddLast(7.8);
-      staticSignal.AddLast(6.1);
-      staticSignal.AddLast(8.9);
-      staticSignal.AddLast(9.7);
+      int minI, minJ;
+      if (mat[i - 1, j] < mat[i - 1, j - 1] && mat[i - 1, j] < mat[i, j - 1]) {
+        minI = i - 1;
+        minJ = j;
+      } else if (mat[i, j - 1] < mat[i - 1, j - 1] && mat[i, j - 1] < mat[i - 1, j]) {
+        minI = i;
+        minJ = j - 1;
+      } else {
+        minI = i - 1;
+        minJ = j - 1;
+      }
+
+      Tuple<int, int> elem = new Tuple<int, int>(i - 1, j - 1);
+      dtwPath.Add(elem);
+
+      double cost = mat[i, j] + GetDTWCost(mat, minI, minJ);
+
+      return cost;
+    }
+
+    private void InitSignals() {
+      Random rnd = new Random();
+
+      for (int i = 0; i < signalLength; i++) {
+        double sample = rnd.NextDouble() * 9 + 1; // in order to have a signal between 1 and 10
+        dynamicSignal.AddLast(sample);
+        staticSignal.AddLast(sample);
+      }
     }
   }
 }

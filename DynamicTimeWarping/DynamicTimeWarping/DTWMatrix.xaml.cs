@@ -13,32 +13,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DynamicTimeWarping
-{
-  public partial class DTWMatrix : UserControl
-  {
+namespace DynamicTimeWarping {
+  public partial class DTWMatrix : UserControl {
     private const int rows = 30;
     private const int cols = 30;
     private Rectangle[,] cells = new Rectangle[rows, cols];
-    
 
-    public DTWMatrix()
-    {
+
+    public DTWMatrix() {
       InitializeComponent();
       InitBoard();
     }
 
-    private void InitBoard()
-    {
+    private void InitBoard() {
       SolidColorBrush fillBrush = new SolidColorBrush();
       fillBrush.Color = (Color)ColorConverter.ConvertFromString("#007700");
       SolidColorBrush strokeBrush = new SolidColorBrush();
       strokeBrush.Color = (Color)ColorConverter.ConvertFromString("#cccccc");
 
-      for (int i = 0; i < rows; i++)
-      {
-        for (int j = 0; j < cols; j++)
-        {
+      for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
           cells[i, j] = new Rectangle();
           cells[i, j].Height = 15;
           cells[i, j].Width = 15;

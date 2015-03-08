@@ -61,6 +61,7 @@
     </chartingToolkit:Chart>
 
     <local:DTWMatrix HorizontalAlignment="Left" Margin="182,5,0,0" VerticalAlignment="Top"/>
+    <Label Name="Result" Content="" HorizontalAlignment="Left" Margin="10,574,0,0" VerticalAlignment="Top" Width="167" HorizontalContentAlignment="Center"/>
 
   </Grid>
 </Window>
