@@ -1,7 +1,7 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="DynamicTimeWarping.MainWindow"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:local="clr-namespace:DynamicTimeWarping" x:Class="DynamicTimeWarping.MainWindow"
         Title="MainWindow" Height="650" Width="650">
   <Grid>
 
@@ -13,12 +13,21 @@
         </Style>
       </chartingToolkit:Chart.LegendStyle>
 
+      <chartingToolkit:Chart.DataContext
+
+     >
+
+        <PointCollection
+
+     >1,10 2,20 3,30 4,40</PointCollection>
+      </chartingToolkit:Chart.DataContext>
+
       <chartingToolkit:LineSeries HorizontalAlignment="Left" Width="450" DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" IsSelectionEnabled="True" Foreground="#FFF90000" Margin="0,0,-2,0"/>
     </chartingToolkit:Chart>
 
-    <Button Name="DTWBtn" Content="DTW" HorizontalAlignment="Left" Margin="56,466,0,0" VerticalAlignment="Top" Width="75" Click="DTWBtn_Click"/>
-    <Button Name="showPathBtn" Content="Show Path" HorizontalAlignment="Left" Margin="56,503,0,0" VerticalAlignment="Top" Width="75" Click="showPathBtn_Click"/>
-    <Button Name="insertSampleBtn" Content="Insert Sample" HorizontalAlignment="Left" Margin="56,540,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.52,0.15" Click="insertSampleBtn_Click"/>
+    <Button x:Name="DTWBtn" Content="DTW" HorizontalAlignment="Left" Margin="56,466,0,0" VerticalAlignment="Top" Width="75" Click="DTWBtn_Click"/>
+    <Button x:Name="showPathBtn" Content="Show Path" HorizontalAlignment="Left" Margin="56,503,0,0" VerticalAlignment="Top" Width="75" Click="showPathBtn_Click"/>
+    <Button x:Name="insertSampleBtn" Content="Insert Sample" HorizontalAlignment="Left" Margin="56,540,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.52,0.15" Click="insertSampleBtn_Click"/>
 
     <chartingToolkit:Chart x:Name="staticSeries" HorizontalAlignment="Left" Margin="-132,142,0,0" Title="Static Signal" VerticalAlignment="Top" Width="450" FontSize="8" Height="176" RenderTransformOrigin="0.5,0.5" Padding="0">
       <chartingToolkit:Chart.RenderTransform>
@@ -37,8 +46,21 @@
       </chartingToolkit:Chart.LegendStyle>
 
 
+      <chartingToolkit:Chart.DataContext
+
+      >
+
+        <PointCollection
+
+      >1,10 2,20 3,30 4,40</PointCollection>
+
+      </chartingToolkit:Chart.DataContext>
+
+
       <chartingToolkit:LineSeries HorizontalAlignment="Left" Width="450" DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" IsSelectionEnabled="True" Foreground="#FFF90000" Margin="0,0,-2,0"/>
     </chartingToolkit:Chart>
+
+    <local:DTWMatrix HorizontalAlignment="Left" Margin="182,5,0,0" VerticalAlignment="Top"/>
 
   </Grid>
 </Window>
