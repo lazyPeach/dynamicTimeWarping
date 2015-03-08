@@ -18,6 +18,7 @@ namespace DynamicTimeWarping {
   public partial class MainWindow : Window {
 
     private LinkedList<double> dynamicSignal = new LinkedList<double>();
+    private LinkedList<double> staticSignal = new LinkedList<double>();
 
     public MainWindow() {
       InitializeComponent();
@@ -25,6 +26,8 @@ namespace DynamicTimeWarping {
       InitDynamicSignal();
       PlotDynamicSignal();
 
+      InitStaticSignal();
+      PlotStaticSignal();
     }
 
     private void InitDynamicSignal()
@@ -61,20 +64,68 @@ namespace DynamicTimeWarping {
       dynamicSignal.AddLast(6.1);
       dynamicSignal.AddLast(8.9);
       dynamicSignal.AddLast(9.7);
-
     }
 
     private void PlotDynamicSignal()
     {
-      List<KeyValuePair<int, double>> staticValues = new List<KeyValuePair<int, double>>();
+      List<KeyValuePair<int, double>> dynamicValues = new List<KeyValuePair<int, double>>();
       int index = 0;
 
       foreach (double val in dynamicSignal)
       {
+        dynamicValues.Add(new KeyValuePair<int, double>(index++, val));
+      }
+
+      dynamicSeries.DataContext = dynamicValues;
+    }
+
+    private void InitStaticSignal()
+    {
+      staticSignal.AddLast(1.2);
+      staticSignal.AddLast(2.8);
+      staticSignal.AddLast(3.1);
+      staticSignal.AddLast(3.4);
+      staticSignal.AddLast(4.0);
+      staticSignal.AddLast(1.9);
+      staticSignal.AddLast(5.8);
+      staticSignal.AddLast(6.4);
+      staticSignal.AddLast(8.9);
+      staticSignal.AddLast(9.8);
+
+      staticSignal.AddLast(8.7);
+      staticSignal.AddLast(8.2);
+      staticSignal.AddLast(6.1);
+      staticSignal.AddLast(2.4);
+      staticSignal.AddLast(2.6);
+      staticSignal.AddLast(2.8);
+      staticSignal.AddLast(3.5);
+      staticSignal.AddLast(4.1);
+      staticSignal.AddLast(1.2);
+      staticSignal.AddLast(4.9);
+
+      staticSignal.AddLast(5.3);
+      staticSignal.AddLast(5.9);
+      staticSignal.AddLast(6.4);
+      staticSignal.AddLast(6.9);
+      staticSignal.AddLast(7.5);
+      staticSignal.AddLast(8.0);
+      staticSignal.AddLast(7.8);
+      staticSignal.AddLast(6.1);
+      staticSignal.AddLast(8.9);
+      staticSignal.AddLast(9.7);
+    }
+
+    private void PlotStaticSignal()
+    {
+      List<KeyValuePair<int, double>> staticValues = new List<KeyValuePair<int, double>>();
+      int index = 0;
+
+      foreach (double val in staticSignal)
+      {
         staticValues.Add(new KeyValuePair<int, double>(index++, val));
       }
 
-      dynamicSeries.DataContext = staticValues;
+      staticSeries.DataContext = staticValues;
     }
 
     private void DTWBtn_Click(object sender, RoutedEventArgs e)
